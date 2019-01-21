@@ -3,11 +3,11 @@ class Cart < ApplicationRecord
 	has_many :products, :through => :cart_items
 
 	def self.create_new
-	  cart = Cart.new
-	  cart.token = SecureRandom.base64(10)
-	  cart.save
+		cart = Cart.new
+		cart.token = SecureRandom.base64(10)
+		cart.save
 
-	  return cart
+		return cart
 	end
 
 	def get_total_dollar_amount

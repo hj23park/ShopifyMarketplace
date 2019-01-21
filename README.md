@@ -187,3 +187,14 @@ Response:
 
 ## SECURITY FEATURE
 
+Used SecureRandom library to assign a token to each cart so that the sensitive information in a user's cart cannot be accessed by other malicious users. 
+
+```
+	def self.create_new
+		cart = Cart.new
+		cart.token = SecureRandom.base64(10)
+		cart.save
+
+		return cart
+	end
+```
