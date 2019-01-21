@@ -3,7 +3,7 @@
 ## USAGE
 
 
-`GET '/api/product/all'`
+### GET '/api/product/all'
 
 This grabs all the products in the database. 
 
@@ -32,7 +32,7 @@ Response:
 ```
 `GET '/api/product/:id'`
 
-This grabs produdct information with a specific id defined on the URL.
+This grabs product information with a specific id defined on the URL.
 
 Response:
 ```
