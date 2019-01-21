@@ -14,8 +14,11 @@ class CartController < ApplicationController
 		cart = Cart.find_by(id: params[:id])
 
 		if cart
+			# calculate the total dollar amount
+			total = cart.get_total_dollar_amount
 			render status: 200, json: {
-				items: cart.cart_items
+				items: cart.cart_items,
+				total: total,
 			}.to_json
 		else 
 			render status: 400, json: {
@@ -142,12 +145,13 @@ class CartController < ApplicationController
 		items = cart.cart_items
 		# check that all items are available in the inventory
 		items.each do |item|
-			inventory = Product.find_by(id: item.id).inventory 
-			if item.quantity > inventory
+			product = item.product
+			# inventory = product.inventory 
+			if item.quantity > product.inventory
 				render status: 404, json: {
 					message: "Error: Not enough inventory for this product.",
 					product: item.id,
-					inventory: inventory,
+					inventory: product.inventory,
 				}.to_json
 				return
 			end				
@@ -165,7 +169,7 @@ class CartController < ApplicationController
 			message: "Checked out!",
 		}.to_json
 
-		#destroy entries in CartItem
+		# destroy entries in CartItem
 		items.each do |item|
 			item.destroy
 		end
