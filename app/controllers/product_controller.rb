@@ -25,11 +25,11 @@ class ProductController < ApplicationController
 	def purchase
 		req_body = JSON.parse(request.body.read)
 		id = req_body["id"]
-		count = req_body["count"]
+		count = 1
 		
 		product = Product.find_by(id: id)
 
-		if product && count <= product.inventory
+		if product && count <= product.inventory 
 			product.inventory = product.inventory - count
 			product.save
 			render status: 200, json: {
