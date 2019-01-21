@@ -2,22 +2,25 @@ class CartController < ApplicationController
 	skip_before_action :verify_authenticity_token
 
 	def create
-		new_cart = Cart.new
-		new_cart.save
+		new_cart = Cart.create_new
 
 		render status: 200, json: {
-			cart_id: new_cart.id
+			cart_token: new_cart.token
 		}.to_json
 	end
 
 	def show_items
-		cart = Cart.find_by(id: params[:id])
+		cart = Cart.find_by(token: params[:token])
 
 		if cart
 			# calculate the total dollar amount
 			total = cart.get_total_dollar_amount
 			render status: 200, json: {
-				items: cart.cart_items,
+				items: cart.cart_items.map{|c| {
+					cart: c.cart_id, 
+					product: c.product_id, 
+					quantity: c.quantity
+				}},
 				total: total,
 			}.to_json
 		else 
@@ -30,11 +33,11 @@ class CartController < ApplicationController
 	# Adds one item at a time to the cart
 	def add_item
 		req_body = JSON.parse(request.body.read)
-		cart_id = req_body["cart_id"]
+		token = req_body["token"]
 		product_id = req_body["product_id"]
 		count = req_body["count"]
 
-		cart = Cart.find_by(id: cart_id)
+		cart = Cart.find_by(token: token)
 		product = Product.find_by(id: product_id)
 
 		if !cart
@@ -83,11 +86,11 @@ class CartController < ApplicationController
 	# Removes one product at a time
 	def delete_item
 		req_body = JSON.parse(request.body.read)
-		cart_id = req_body["cart_id"]
+		token = req_body["token"]
 		product_id = req_body["product_id"]
 		count = req_body["count"]
 
-		cart = Cart.find_by(id: cart_id)
+		cart = Cart.find_by(token: token)
 		product = Product.find_by(id: product_id)
 		one_cart_item = cart.cart_items.where(product: product)[0]
 
@@ -132,8 +135,8 @@ class CartController < ApplicationController
 
 	def checkout 
 		req_body = JSON.parse(request.body.read)
-		cart_id = req_body["cart_id"]
-		cart = Cart.find_by(id: cart_id)
+		token = req_body["token"]
+		cart = Cart.find_by(token: token)
 
 		if !cart 
 			render status: 400, json: {
