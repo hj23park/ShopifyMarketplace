@@ -2,6 +2,18 @@
 
 ## USAGE
 
+To run the API locally:
+
+First ensure you have postgresql installed on your local environment otherwise install it here:
+
+https://www.postgresql.org/download/
+
+Enter the project directory and run:
+
+`rails server`
+
+You can now access the API endpoints on `localhost:3000`
+
 
 ### GET '/api/product/all'
 
@@ -190,11 +202,11 @@ Response:
 Used SecureRandom library to assign a token to each cart so that the sensitive information in a user's cart cannot be accessed by other malicious users. 
 
 ```
-	def self.create_new
-		cart = Cart.new
-		cart.token = SecureRandom.base64(10)
-		cart.save
+def self.create_new
+	cart = Cart.new
+	cart.token = SecureRandom.base64(10)
+	cart.save
 
-		return cart
-	end
+	return cart
+end
 ```
